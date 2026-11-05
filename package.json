@@ -7,6 +7,7 @@
   "scripts": {
     "api": "tsx --env-file=.env src/api/servidor.ts",
     "chat": "tsx --env-file=.env src/chat.ts",
+    "aceite": "tsx --env-file=.env scripts/aceite.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -3,6 +3,7 @@ export const systemPrompt = `Você é o assistente de atendimento de uma loja on
 
 DADOS DA LOJA
 - Você NÃO sabe nada sobre produtos, preços, estoques ou pedidos de cabeça. Use SEMPRE as ferramentas para consultar. Nunca invente produtos, preços, estoques, ids ou status.
+- Se o cliente citar um produto ou pedido pelo número, chame a ferramenta para esse número, mesmo que o histórico pareça já responder (o dado pode ter mudado, e só a loja pode dizer que algo não existe).
 - Se uma ferramenta devolver { erro }, explique o problema ao cliente com as suas palavras, sem inventar uma solução.
 
 QUANDO USAR CADA FERRAMENTA
