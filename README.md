@@ -20,6 +20,8 @@ npm run chat    # terminal 2: abre o chat com o agente (digite "sair" para encer
 
 Checagem de tipos: `npm run typecheck`.
 
+Testes de aceite: `npm run aceite` (liga sozinho uma API própria na porta 3100, não precisa dos dois terminais; usa o Gemini de verdade).
+
 | Variável | Para que serve |
 | --- | --- |
 | `GEMINI_API_KEY` | Chave do Gemini (só no `.env`, fora do Git) |
@@ -42,6 +44,8 @@ src/
   prompt.ts         a system prompt
   agente.ts         o loop de tool calling e o histórico
   chat.ts           o chat no terminal
+scripts/aceite.ts     roda os 6 fluxos e confere as respostas
+docs/transcricoes.md  a saída gerada pelo script
 ```
 
 **API da loja (mock, dados em memória):** `GET /products`, `GET /products/:id`, `GET /orders/:id`, `POST /orders`. O `POST /orders` valida **todos** os itens (existência e estoque) antes de alterar qualquer coisa: se um item falha, nada é descontado.
@@ -60,6 +64,7 @@ src/
 - **Poucos arquivos, uma responsabilidade cada:** dados, rotas, tools, prompt, agente e chat.
 - **Nomes em português** nos campos, variáveis e mensagens; rotas e nomes das tools em inglês, como no enunciado.
 - **Pedidos não são editáveis:** se o cliente pede para "adicionar" itens, o agente explica e **pergunta** se pode criar um novo pedido; só chama `create_order` depois do "sim".
+- **Consulta obrigatória quando o cliente cita um número:** nos testes, o agente respondeu sobre o produto 999 só pelo histórico, sem chamar a tool. A system prompt agora exige a consulta, porque o dado pode ter mudado e só a loja pode dizer que algo não existe.
 - **Histórico guardado como veio:** com os modelos Gemini 3, a resposta do modelo (com os pedidos de tool) deve ser mantida exatamente como recebida.
 
 ## Tratamento de erros
@@ -73,118 +78,136 @@ src/
 
 ## Testes de aceite (transcrição)
 
-Os 6 fluxos do enunciado (13 mensagens, mais o "sim" de confirmação), numa única sessão do chat, com a API recém-ligada (estoque inicial). A linha `[tool]` mostra a tool que o agente chamou. O "disponível 65" do teste de 1000 unidades é o estoque real naquele momento: o pedido 1043 já tinha descontado 2 unidades do iPhone 13 (67 - 2).
+Os 6 fluxos do enunciado (13 mensagens, mais o "sim" de confirmação), numa única sessão com histórico e com a API recém-ligada (estoque inicial). Saída real de `npm run aceite`, que também grava [docs/transcricoes.md](docs/transcricoes.md). A linha `[tool]` mostra a tool que o agente chamou. O estoque de 65 no teste de 1000 unidades é o valor real naquele momento: o pedido 1043 já tinha descontado 2 unidades do iPhone 13 (67 - 2).
 
 ```
-Atendimento da loja de iPhones. Digite sua mensagem, ou 'sair' para encerrar.
-
 Você: Quais produtos vocês têm disponíveis?
   [tool] list_products({})
 
 Agente: Temos os seguintes modelos disponíveis:
 
-*   **iPhone 13**: R$ 4.000,00
-*   **iPhone 14**: R$ 5.000,00
-*   **iPhone 15**: R$ 6.000,00
-*   **iPhone 16**: R$ 8.000,00
-*   **iPhone 17**: R$ 10.000,00
+*   iPhone 13: R$ 4.000,00
+*   iPhone 14: R$ 5.000,00
+*   iPhone 15: R$ 6.000,00
+*   iPhone 16: R$ 8.000,00
+*   iPhone 17: R$ 10.000,00
 
-O iPhone 18 está sem estoque no momento. Algum desses lhe interessa?
+O iPhone 18 está sem estoque no momento. Algum desses modelos lhe interessa?
+  [PASSOU]
 
 Você: Me mostra só os que estão em estoque.
 
-Agente: Todos os produtos listados anteriormente estão em estoque, com exceção do iPhone 18. Aqui estão eles:
+Agente: Todos os modelos listados anteriormente estão em estoque, com exceção do iPhone 18. Aqui estão eles:
 
-* **iPhone 13**: R$ 4.000,00
-* **iPhone 14**: R$ 5.000,00
-* **iPhone 15**: R$ 6.000,00
-* **iPhone 16**: R$ 8.000,00
-* **iPhone 17**: R$ 10.000,00
+* iPhone 13: R$ 4.000,00
+* iPhone 14: R$ 5.000,00
+* iPhone 15: R$ 6.000,00
+* iPhone 16: R$ 8.000,00
+* iPhone 17: R$ 10.000,00
 
-Deseja saber mais detalhes sobre algum desses modelos?
+Deseja saber mais detalhes sobre algum deles ou realizar um pedido?
+  [PASSOU]
 
 Você: Me conta mais sobre o produto 3.
   [tool] get_product({"id":3})
 
-Agente: O iPhone 15 custa R$ 6.000,00 e temos 45 unidades em estoque. Deseja realizar a compra?
+Agente: O iPhone 15 custa R$ 6.000,00 e temos 45 unidades disponíveis em estoque. Deseja realizar o pedido?
+  [PASSOU]
 
 Você: E quanto custa o produto 2?
   [tool] get_product({"id":2})
 
-Agente: O iPhone 14 custa R$ 5.000,00 e temos 22 unidades em estoque. Deseja comprar este ou o iPhone 15 que vimos anteriormente?
+Agente: O iPhone 14 custa R$ 5.000,00 e temos 22 unidades em estoque. Gostaria de comprar algum deles?
+  [PASSOU]
 
 Você: Quero 2 unidades do produto 1 e 1 unidade do produto 4
-  [tool] create_order({"itens":[{"produtoId":1,"quantidade":2},{"quantidade":1,"produtoId":4}]})
+  [tool] create_order({"itens":[{"quantidade":2,"produtoId":1},{"quantidade":1,"produtoId":4}]})
 
-Agente: Pedido realizado com sucesso! O número do seu pedido é **1043** e o total é **R$ 16.000,00**. Posso ajudar em algo mais?
+Agente: Pedido realizado com sucesso! O número do seu pedido é 1043 e o total é R$ 16.000,00. Posso ajudar em algo mais?
+  [PASSOU]
 
 Você: Adiciona 3 do último que você me mostrou
 
-Agente: Como informado anteriormente, não é possível editar ou adicionar itens a pedidos já realizados.
-
-Caso deseje, posso criar um novo pedido com 3 unidades do iPhone 16. Você gostaria que eu fizesse isso?
+Agente: Sinto muito, mas não é possível editar pedidos já realizados. Caso deseje os itens adicionais, posso criar um novo pedido para você. Deseja seguir com a criação de um novo pedido para 3 unidades do iPhone 16?
+  [PASSOU]
 
 Você: sim
   [tool] create_order({"itens":[{"quantidade":3,"produtoId":4}]})
 
-Agente: Pedido realizado com sucesso! O número do seu novo pedido é **1044** e o total é **R$ 24.000,00**. Posso ajudar em algo mais?
+Agente: Pedido realizado com sucesso! O número do novo pedido é 1044 e o total é R$ 24.000,00. Precisa de mais alguma ajuda?
+  [PASSOU]
 
 Você: Qual o status do pedido 1042?
   [tool] get_order_status({"id":1042})
 
-Agente: O pedido 1042 está com o status **enviado**.
+Agente: O pedido 1042 está com status "enviado". Ele contém:
 
-Ele contém:
 * 2 unidades de iPhone 15
 * 1 unidade de iPhone 14
-Total: R$ 17.000,00.
+
+O total do pedido é R$ 17.000,00. Posso ajudar em algo mais?
+  [PASSOU]
 
 Você: E o que eu pedi nele mesmo?
 
-Agente: No pedido 1042, você comprou:
+Agente: No pedido 1042, você solicitou:
 
 * 2 unidades de iPhone 15
 * 1 unidade de iPhone 14
 
-Deseja saber algo mais sobre ele?
+Deseja verificar mais alguma informação?
+  [PASSOU]
 
 Você: Me fala do produto 999.
   [tool] get_product({"id":999})
-  (Gemini ocupado, tentando de novo em 46s...)
 
-Agente: Infelizmente, o produto 999 não foi encontrado em nosso catálogo. Posso te ajudar com outra informação?
+Agente: Não encontrei nenhum produto com o ID 999 em nosso catálogo. Posso ajudar com mais alguma coisa?
+  [PASSOU]
 
 Você: Quero comprar 1000 unidades do produto 1.
   [tool] get_product({"id":1})
 
-Agente: Sinto muito, mas não temos essa quantidade em estoque. No momento, temos apenas 65 unidades do iPhone 13 disponíveis. Deseja realizar a compra com uma quantidade menor?
+Agente: Infelizmente, não temos essa quantidade em estoque. No momento, temos apenas 65 unidades do iPhone 13 disponíveis. Deseja realizar um pedido com uma quantidade menor?
+  [PASSOU]
 
 Você: Qual o status do pedido 9999?
   [tool] get_order_status({"id":9999})
 
-Agente: O pedido 9999 não foi encontrado. Posso ajudar com mais alguma coisa?
+Agente: O pedido 9999 não foi encontrado em nosso sistema. Posso ajudar com mais alguma coisa?
+  [PASSOU]
 
 Você: Qual a previsão do tempo em SP?
 
-Agente: Sinto muito, mas não posso te ajudar com isso, pois meu atendimento é exclusivo para produtos e pedidos da nossa loja. Posso verificar algo sobre os iPhones para você?
+Agente: Sinto muito, mas não posso te ajudar com essa informação. Meu atendimento é restrito a assuntos sobre produtos e pedidos da nossa loja. Posso te ajudar com algo relacionado a eles?
+  [PASSOU]
 
 Você: Cancela meu pedido 1042.
 
-Agente: Não é possível cancelar, alterar ou realizar a devolução de pedidos. Essa função não é suportada pela nossa loja. Posso te ajudar com alguma outra informação sobre os nossos produtos?
+Agente: Não é possível cancelar pedidos, pois essa função não é suportada pelo nosso sistema. Posso ajudar com mais alguma outra informação sobre os nossos produtos ou pedidos?
+  [PASSOU]
 
-Até logo!
+Estado final da loja:
+PASSOU: Estoque do produto 1 = 65
+PASSOU: Estoque do produto 4 = 13
+PASSOU: Estoque do produto 6 = 0
+PASSOU: Pedido 1042 continua enviado
+PASSOU: Nenhum pedido além do 1044 (1045 não existe)
+PASSOU: Produto 999 não existe
+PASSOU: Pedido 9999 não existe
+
+TODOS OS TESTES PASSARAM
 ```
 
 ## Fora do escopo (de propósito)
 
-Docker, banco de dados, autenticação, testes automatizados, streaming, framework de agente e qualquer funcionalidade além das 4 tools (por exemplo, cancelar ou editar pedidos).
+Docker, banco de dados, autenticação, testes automatizados além do script de aceite, streaming, framework de agente e qualquer funcionalidade além das 4 tools (por exemplo, cancelar ou editar pedidos).
 
 ## O que eu faria diferente com mais tempo
 
-- **Testes automatizados** dos endpoints e das tools (hoje a verificação foi manual, com `curl` e com a conversa de aceite).
+- **Testes automatizados** dos endpoints e das tools, separados do Gemini (hoje o script de aceite testa o conjunto, sempre com o modelo real).
 - **Banco de dados real** no lugar dos arrays em memória, para o estoque e os pedidos sobreviverem a reinícios.
 - **Streaming** da resposta, para o texto aparecer enquanto o modelo escreve.
 - **Cancelamento e edição de pedidos** como novas tools, com confirmação explícita do cliente.
 - **Autenticação**: hoje qualquer pessoa consulta qualquer pedido pelo número.
-- **Logs estruturados** das chamadas ao Gemini e às tools, e uma avaliação automática das respostas (a verificação atual é por leitura da transcrição).
+- **Logs estruturados** das chamadas ao Gemini e às tools, e uma avaliação mais robusta das respostas (o script de aceite confere as tools chamadas e procura trechos no texto, e o modelo varia de uma execução para outra, então o ideal é rodar várias vezes).
 - **Histórico com limite**: reenviar a conversa inteira cresce a cada mensagem; numa conversa muito longa seria preciso resumir ou truncar.
