@@ -1,0 +1,13 @@
+node_modules/
+dist/
+
+# segredos: só o .env.example vai para o Git
+.env
+.env.*
+!.env.example
+
+# guia de estudo (fora do Git) e temporários do Word
+Trajetoria-Desafio-Runflow.docx
+~$*.docx
+
+CLAUDE.md
