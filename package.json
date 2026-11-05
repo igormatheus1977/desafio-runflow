@@ -1,0 +1,21 @@
+{
+  "name": "desafio-runflow",
+  "version": "1.0.0",
+  "description": "Agente de atendimento para uma loja de iPhones (desafio Runflow)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "api": "tsx --env-file=.env src/api/servidor.ts",
+    "chat": "tsx --env-file=.env src/chat.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "^2.32.0",
+    "fastify": "^5.12.8"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
