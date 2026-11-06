@@ -60,8 +60,8 @@ export const pedidos: Pedido[] = [
   },
 ];
 
-// Os pedidos novos continuam a numeração dos existentes (1043, 1044...).
-let proximoIdPedido = 1043;
+// Os pedidos novos começam em 1001; os de exemplo (1040 a 1042) são dados fixos de teste.
+let proximoIdPedido = 1001;
 export function gerarIdPedido(): number {
   return proximoIdPedido++;
 }

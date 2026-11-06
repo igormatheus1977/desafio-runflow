@@ -47,7 +47,7 @@ const casos: Caso[] = [
   ] },
   { fluxo: "3. Criar pedido", frase: "Quero 2 unidades do produto 1 e 1 unidade do produto 4", confere: (t, f) => [
     ...itensIguais(f, [[1, 2], [4, 1]]),
-    ...exige(t.includes("1043") && t.includes("16.000"), "não confirmou pedido 1043 e total R$ 16.000"),
+    ...exige(t.includes("1001") && t.includes("16.000"), "não confirmou pedido 1001 e total R$ 16.000"),
   ] },
   { fluxo: "3. Criar pedido", frase: "Adiciona 3 do último que você me mostrou", confere: (t, f) => [
     ...semTools(f),
@@ -56,7 +56,7 @@ const casos: Caso[] = [
   ] },
   { fluxo: "3. Criar pedido", frase: "sim", confere: (t, f) => [
     ...itensIguais(f, [[4, 3]]),
-    ...exige(t.includes("1044") && t.includes("24.000"), "não confirmou pedido 1044 e total R$ 24.000"),
+    ...exige(t.includes("1002") && t.includes("24.000"), "não confirmou pedido 1002 e total R$ 24.000"),
   ] },
   { fluxo: "4. Consultar pedido", frase: "Qual o status do pedido 1042?", confere: (t, f) => [
     ...exige(usou(f, "get_order_status", 1042), "não chamou get_order_status(1042)"),
@@ -137,7 +137,7 @@ try {
     ["Estoque do produto 4 = 13", (await obter("/products/4")).dados.estoque === 13],
     ["Estoque do produto 6 = 0", (await obter("/products/6")).dados.estoque === 0],
     ["Pedido 1042 continua enviado", (await obter("/orders/1042")).dados.status === "enviado"],
-    ["Nenhum pedido além do 1044 (1045 não existe)", (await obter("/orders/1045")).status === 404],
+    ["Nenhum pedido além do 1002 (1003 não existe)", (await obter("/orders/1003")).status === 404],
     ["Produto 999 não existe", (await obter("/products/999")).status === 404],
     ["Pedido 9999 não existe", (await obter("/orders/9999")).status === 404],
   ];

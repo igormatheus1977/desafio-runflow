@@ -20,11 +20,11 @@ cp .env.example .env
 
 **3. Abra o `.env` e preencha as variáveis.** Só a chave é obrigatória:
 
-| Variável | Para que serve |
-| --- | --- |
-| `GEMINI_API_KEY` | Sua chave do Gemini (obrigatória) |
-| `GEMINI_MODEL` | Modelo usado. Se ficar vazio, usa `gemini-3.1-flash-lite` |
-| `API_PORT` | Porta da API da loja. Se ficar vazio, usa `3000` |
+| Variável          | Para que serve                                              |
+| ------------------ | ----------------------------------------------------------- |
+| `GEMINI_API_KEY` | Sua chave do Gemini (obrigatória)                          |
+| `GEMINI_MODEL`   | Modelo usado. Se ficar vazio, usa `gemini-3.1-flash-lite` |
+| `API_PORT`       | Porta da API da loja. Se ficar vazio, usa `3000`          |
 
 **4. Ligue a API da loja em um terminal:**
 

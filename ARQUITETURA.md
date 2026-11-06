@@ -1,7 +1,5 @@
 # Arquitetura — Agente de atendimento (Runflow)
 
-Documento de planejamento (Etapa 1). **Nenhum código foi escrito.** Serve para você aprovar antes de construirmos.
-
 ## 1. Decisões já fechadas
 
 | Tema                       | Decisão                                                                                                                        | Por quê?                                                                                                                                                                                 |
