@@ -4,7 +4,7 @@ Este projeto é um agente de atendimento para uma loja online de iPhones. Você 
 
 ## Como rodar
 
-**Você vai precisar de:** Node.js 20.6 ou mais novo (é ele que lê o `.env`, por isso não usei `dotenv`) e uma chave do Gemini, criada em [aistudio.google.com](https://aistudio.google.com).
+**Você vai precisar de:** Node.js 20.6 ou mais novo e uma chave do Gemini, criada em [aistudio.google.com](https://aistudio.google.com).
 
 **1. Instale as dependências:**
 
@@ -56,7 +56,7 @@ npm run typecheck
 
 ```
 Você (terminal) → chat.ts → agente.ts ⇄ Gemini
-                               ↓ o Gemini PEDE uma tool; o meu código executa
+                               ↓ o Gemini PEDE uma tool; o código executa
                            tools.ts → fetch → API da loja (Fastify) → JSON
 ```
 
