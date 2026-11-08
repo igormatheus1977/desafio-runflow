@@ -2,7 +2,7 @@
 
 Gerado por `npm run aceite`, numa única sessão com histórico e com a API recém-ligada.
 
-**Resultado: TODOS OS TESTES PASSARAM**
+**Resultado: 1 VERIFICAÇÃO(ÕES) FALHARAM**
 
 ## Fluxo 1. Listar produtos
 
@@ -12,7 +12,7 @@ Gerado por `npm run aceite`, numa única sessão com histórico e com a API rec�
 
 **Resposta:**
 
-Temos os seguintes modelos disponíveis:
+Temos os seguintes modelos em estoque:
 
 * **iPhone 13**: R$ 4.000,00
 * **iPhone 14**: R$ 5.000,00
@@ -20,9 +20,9 @@ Temos os seguintes modelos disponíveis:
 * **iPhone 16**: R$ 8.000,00
 * **iPhone 17**: R$ 10.000,00
 
-O iPhone 18 está sem estoque no momento.
+O **iPhone 18** está indisponível no momento.
 
-**Resultado:** PASSOU
+**Resultado:** FALHOU: não avisou que o iPhone 18 está sem estoque
 
 ---
 
@@ -32,7 +32,7 @@ O iPhone 18 está sem estoque no momento.
 
 **Resposta:**
 
-Estes são os modelos com estoque disponível:
+Estes são os modelos disponíveis em estoque:
 
 * **iPhone 13**: R$ 4.000,00
 * **iPhone 14**: R$ 5.000,00
@@ -53,7 +53,7 @@ Estes são os modelos com estoque disponível:
 
 **Resposta:**
 
-O iPhone 15 custa R$ 6.000,00 e temos 45 unidades em estoque. Deseja realizar a compra?
+O iPhone 15 custa R$ 6.000,00 e temos 45 unidades disponíveis em estoque. Deseja realizar um pedido?
 
 **Resultado:** PASSOU
 
@@ -65,7 +65,7 @@ O iPhone 15 custa R$ 6.000,00 e temos 45 unidades em estoque. Deseja realizar a 
 
 **Resposta:**
 
-O iPhone 14 custa R$ 5.000,00 e temos 22 unidades em estoque. Gostaria de comprar este modelo?
+O iPhone 14 custa R$ 5.000,00 e temos 22 unidades em estoque. Gostaria de comprar?
 
 **Resultado:** PASSOU
 
@@ -76,11 +76,14 @@ O iPhone 14 custa R$ 5.000,00 e temos 22 unidades em estoque. Gostaria de compra
 
 **Pergunta:** Quero 2 unidades do produto 1 e 1 unidade do produto 4
 
-**Tools:** `create_order({"itens":[{"produtoId":1,"quantidade":2},{"quantidade":1,"produtoId":4}]})`
+**Tools:** `create_order({"itens":[{"quantidade":2,"produtoId":1},{"produtoId":4,"quantidade":1}]})`
 
 **Resposta:**
 
-Pedido criado com sucesso! O número do seu pedido é 1001 e o total é R$ 16.000,00.
+Pedido criado com sucesso!
+
+Número do pedido: 1001
+Total: R$ 16.000,00
 
 **Resultado:** PASSOU
 
@@ -92,7 +95,7 @@ Pedido criado com sucesso! O número do seu pedido é 1001 e o total é R$ 16.00
 
 **Resposta:**
 
-Como explicado, não é possível editar pedidos existentes. Você gostaria de criar um novo pedido com 3 unidades do iPhone 16?
+Como informei anteriormente, não é possível editar pedidos já realizados. Você deseja criar um novo pedido com 3 unidades do iPhone 16?
 
 **Resultado:** PASSOU
 
@@ -104,7 +107,10 @@ Como explicado, não é possível editar pedidos existentes. Você gostaria de c
 
 **Resposta:**
 
-Pedido criado com sucesso! O número do seu pedido é 1002 e o total é R$ 24.000,00.
+Pedido criado com sucesso!
+
+Número do pedido: 1002
+Total: R$ 24.000,00
 
 **Resultado:** PASSOU
 
@@ -119,7 +125,13 @@ Pedido criado com sucesso! O número do seu pedido é 1002 e o total é R$ 24.00
 
 **Resposta:**
 
-O pedido 1042 está com status de "enviado". Ele contém 2 unidades do iPhone 15 e 1 unidade do iPhone 14, com um total de R$ 17.000,00.
+O pedido 1042 está com status **enviado**.
+
+Itens:
+* 2 unidades de iPhone 15
+* 1 unidade de iPhone 14
+
+Total: R$ 17.000,00
 
 **Resultado:** PASSOU
 
@@ -136,6 +148,8 @@ O pedido 1042 contém:
 * 2 unidades de iPhone 15
 * 1 unidade de iPhone 14
 
+O valor total deste pedido é R$ 17.000,00.
+
 **Resultado:** PASSOU
 
 ---
@@ -149,7 +163,7 @@ O pedido 1042 contém:
 
 **Resposta:**
 
-Não foi possível encontrar o produto 999 em nosso catálogo. Posso ajudar com algo mais?
+Infelizmente, o produto 999 não foi encontrado em nosso catálogo. Posso ajudar com mais alguma informação sobre os modelos que temos?
 
 **Resultado:** PASSOU
 
@@ -161,7 +175,7 @@ Não foi possível encontrar o produto 999 em nosso catálogo. Posso ajudar com 
 
 **Resposta:**
 
-Infelizmente não temos essa quantidade disponível. Temos apenas 65 unidades do iPhone 13 em estoque. Deseja realizar o pedido com uma quantidade menor?
+Infelizmente, não temos essa quantidade em estoque. No momento, temos apenas 65 unidades do iPhone 13 disponíveis. Deseja realizar um pedido com uma quantidade menor?
 
 **Resultado:** PASSOU
 
@@ -173,7 +187,7 @@ Infelizmente não temos essa quantidade disponível. Temos apenas 65 unidades do
 
 **Resposta:**
 
-Não foi possível localizar o pedido 9999. Poderia conferir o número, por favor?
+Infelizmente, o pedido 9999 não foi encontrado. Posso ajudar com algo mais?
 
 **Resultado:** PASSOU
 
@@ -188,7 +202,7 @@ Não foi possível localizar o pedido 9999. Poderia conferir o número, por favo
 
 **Resposta:**
 
-Sinto muito, mas não posso te ajudar com previsões do tempo. Estou aqui apenas para tirar dúvidas sobre produtos e pedidos da nossa loja. Posso ajudar com algo relacionado a eles?
+Sinto muito, mas não posso te ajudar com isso, pois trato apenas de assuntos relacionados aos produtos e pedidos desta loja. Posso verificar algo sobre os iPhones para você?
 
 **Resultado:** PASSOU
 
@@ -200,7 +214,7 @@ Sinto muito, mas não posso te ajudar com previsões do tempo. Estou aqui apenas
 
 **Resposta:**
 
-Não é possível realizar cancelamentos. Esse procedimento não é suportado pela nossa loja. Posso ajudar com mais alguma informação sobre produtos ou pedidos?
+Sinto muito, mas não é possível cancelar pedidos, essa função não é suportada pela loja. Posso te ajudar com alguma outra dúvida sobre nossos produtos?
 
 **Resultado:** PASSOU
 

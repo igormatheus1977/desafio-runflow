@@ -2,7 +2,6 @@ import Fastify from "fastify";
 import { produtos, pedidos, gerarIdPedido, type ItemPedido } from "./dados.js";
 
 const app = Fastify();
-
 app.get("/products", async () => produtos);
 
 app.get<{ Params: { id: string } }>("/products/:id", async (req, reply) => {
