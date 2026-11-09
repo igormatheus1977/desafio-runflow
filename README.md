@@ -1,6 +1,6 @@
 # Agente de atendimento para loja de iPhones
 
-Este projeto é um agente de atendimento para uma loja online de iPhones. Você conversa com ele no terminal, e ele consulta produtos, consulta pedidos e cria pedidos. Para isso, o Gemini decide o que precisa ser consultado, e o meu código faz a chamada a uma API mock da loja (uma simulação de API, com os dados em memória).
+Este projeto é um agente de atendimento para uma loja online de iPhones. Você conversa com ele no terminal, e ele consulta produtos, consulta pedidos e cria pedidos. Para isso, o Gemini decide o que precisa ser consultado, e o código faz a chamada a uma API mock da loja (uma simulação de API, com os dados em memória).
 
 ## Como rodar
 
@@ -8,13 +8,13 @@ Este projeto é um agente de atendimento para uma loja online de iPhones. Você 
 
 **1. Instale as dependências:**
 
-```bash
+```TypeScript
 npm install
 ```
 
 **2. Crie o arquivo `.env` a partir do exemplo:**
 
-```bash
+```TypeScript
 cp .env.example .env
 ```
 
@@ -28,13 +28,13 @@ cp .env.example .env
 
 **4. Ligue a API da loja em um terminal:**
 
-```bash
+```TypeScript
 npm run api
 ```
 
 **5. Abra o chat em um segundo terminal:**
 
-```bash
+```TypeScript
 npm run chat
 ```
 
@@ -42,13 +42,13 @@ Digite sua mensagem e aperte Enter. Para encerrar, digite `sair`.
 
 **Para rodar os testes de aceite**, ou seja, os testes do enunciado do desafio (usa o Gemini de verdade e liga sozinho uma API própria na porta 3100, então não precisa do passo 4):
 
-```bash
+```TypeScript
 npm run aceite
 ```
 
 **Para checar os tipos do TypeScript** (verifica os arquivos typescript, por exemplo, a soma de uma string com um numero: "7000" + 7000 = 70007000, o que é absurdo)
 
-```bash
+```TypeScript
 npm run typecheck
 ```
 
